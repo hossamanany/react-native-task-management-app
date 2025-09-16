@@ -3,57 +3,57 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { globalStyles } from '../styles/styles';
 
-
-
-enum TaskStatus {
-  Completed = 'Completed',
-  Pending = 'In Progress',
-}
-
-
 interface Task {
   id: string;
   name: string;
-  dueDate: string;
-  status: string;
+  status: 'Complete' | 'Incomplete';
 }
 
 interface TaskItemProps {
   task: Task;
   onDelete: (id: string) => void;
+  onToggleComplete: (id: string) => void;
 }
 
-export default function TaskItem({ task, onDelete }: TaskItemProps) {
+export default function TaskItem({ task, onDelete, onToggleComplete }: TaskItemProps) {
   const navigation = useNavigation();
 
-  //get color based on status
-  const getStatusColor = (status: TaskStatus): string => {
-    switch (status) {
-      case TaskStatus.Completed:
-        return 'green';
-      case TaskStatus.Pending:
-        return 'gold';
-      default:
-        return 'gray'; // Default 
-    }
+  // Get color based on status
+  const getStatusColor = (status: string): string => {
+    return status === 'Complete' ? 'green' : 'orange';
   };
 
+  // Get text style based on completion status
+  const getTextStyle = () => {
+    return task.status === 'Complete' ? globalStyles.completedText : globalStyles.normalText;
+  };
 
-  
   return (
-    <View style={globalStyles.taskContainer}>
-      {/* Status Indicator */}
-      <View style={[globalStyles.statusIndicator, { backgroundColor: getStatusColor(task.status) }]} />
-      <Text>TASK: {task.name}</Text>
-      <Text>DATE: {task.dueDate}</Text>
-      <Text>STATUS: {task.status}</Text>
-      <View style={globalStyles.buttonContainer}>
+    <View style={[
+      globalStyles.taskContainer,
+      task.status === 'Complete' ? globalStyles.completedTask : globalStyles.incompleteTask
+    ]}>
+      <View style={globalStyles.taskHeader}>
+        {/* Toggle Complete Button */}
         <TouchableOpacity
-          style={[globalStyles.button, globalStyles.editButton]}
-          onPress={() => navigation.navigate('EditTask', { task })}
+          style={[
+            globalStyles.toggleButton,
+            task.status === 'Complete' ? globalStyles.toggleButtonComplete : globalStyles.toggleButtonIncomplete
+          ]}
+          onPress={() => onToggleComplete(task.id)}
         >
-          <Text style={globalStyles.buttonText}>Edit</Text>
+          <Text style={globalStyles.toggleButtonText}>
+            {task.status === 'Complete' ? '✓' : '○'}
+          </Text>
         </TouchableOpacity>
+        
+        {/* Task Name */}
+        <Text style={[globalStyles.taskName, getTextStyle()]}>
+          {task.name}
+        </Text>
+      </View>
+      
+      <View style={globalStyles.buttonContainer}>
         <TouchableOpacity
           style={[globalStyles.button, globalStyles.deleteButton]}
           onPress={() => onDelete(task.id)}

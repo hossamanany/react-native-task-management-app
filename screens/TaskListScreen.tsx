@@ -1,34 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { View, FlatList, Button, Text, TextInput } from 'react-native';
+import { View, FlatList, Button, Text } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import TaskItem from '../components/TaskItem';
 import { globalStyles } from '../styles/styles';
-import { format, isValid, parseISO } from 'date-fns';
-import Icon from 'react-native-vector-icons/Ionicons'; // Import the icon library
+import { TaskListScreenNavigationProp } from '../types';
 
 interface Task {
   id: string;
   name: string;
-  dueDate: string;
-  status: string;
+  status: 'Complete' | 'Incomplete';
 }
 
 export default function TaskListScreen() {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [quote, setQuote] = useState<{ q: string; a: string } | null>(null);
-  const navigation = useNavigation();
+  const navigation = useNavigation<TaskListScreenNavigationProp>();
 
-  // fetch tasks from AsyncStorage
+  // Fetch tasks from AsyncStorage
   const fetchTasks = async () => {
     const storedTasks = await AsyncStorage.getItem('tasks');
     if (storedTasks) {
       const parsedTasks: Task[] = JSON.parse(storedTasks);
-      parsedTasks.sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
+      // Sort tasks: incomplete first, then complete
+      parsedTasks.sort((a, b) => {
+        if (a.status === b.status) return 0;
+        return a.status === 'Incomplete' ? -1 : 1;
+      });
       setTasks(parsedTasks);
-      setFilteredTasks(parsedTasks); // Initialize filtered tasks
     } else {
       console.log('No tasks found!');
     }
@@ -36,18 +34,6 @@ export default function TaskListScreen() {
 
   useEffect(() => {
     fetchTasks();
-
-    const fetchQuote = async () => {
-      try {
-        const response = await fetch('https://zenquotes.io/api/random');
-        const data = await response.json();
-        setQuote(data[0]);
-      } catch (error) {
-        console.error('Error fetching quote:', error);
-      }
-    };
-
-    fetchQuote();
   }, []);
 
   // Listen for screen focus to refresh tasks
@@ -60,63 +46,43 @@ export default function TaskListScreen() {
   const handleDelete = async (id: string) => {
     const updatedTasks = tasks.filter((task) => task.id !== id);
     setTasks(updatedTasks);
-    setFilteredTasks(updatedTasks); // Update filtered tasks
+    await AsyncStorage.setItem('tasks', JSON.stringify(updatedTasks));
+  };
+
+  const handleToggleComplete = async (id: string) => {
+    const updatedTasks = tasks.map((task) => 
+      task.id === id 
+        ? { ...task, status: task.status === 'Complete' ? 'Incomplete' as const : 'Complete' as const }
+        : task
+    );
+    setTasks(updatedTasks);
     await AsyncStorage.setItem('tasks', JSON.stringify(updatedTasks));
   };
 
   const renderTaskItem = ({ item }: { item: Task }) => {
-    const parsedDate = parseISO(item.dueDate);
-    const formattedDate = isValid(parsedDate) ? format(parsedDate, 'MMMM do, yyyy') : 'Invalid Date';
-
     return (
       <TaskItem
-        task={{
-          ...item,
-          dueDate: formattedDate,
-        }}
+        task={item}
         onDelete={handleDelete}
+        onToggleComplete={handleToggleComplete}
       />
     );
-  };
-
-  // Handle search query change
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    const filtered = tasks.filter(task => 
-      task.name.toLowerCase().includes(query.toLowerCase())
-    );
-    setFilteredTasks(filtered);
   };
 
   return (
     <View style={globalStyles.container}>
-      {/* Quote Display */}
-      {quote && (
-        <View style={globalStyles.quoteContainer}>
-          <Text style={globalStyles.quoteText}>
-            "{quote.q}" - {quote.a}
-          </Text>
-        </View>
-      )}
-
-      {/* Search Bar with Icon */}
-      <View style={globalStyles.searchBar}>
-        <Icon name="search" size={20} style={globalStyles.searchIcon} display="none" />
-        <TextInput
-          style={globalStyles.searchBar}
-          placeholder="Search tasks"
-          value={searchQuery}
-          onChangeText={handleSearch}
-        />
-      </View>
-
       <FlatList
-        data={filteredTasks}
+        data={tasks}
         keyExtractor={(item) => item.id}
         renderItem={renderTaskItem}
+        ListEmptyComponent={
+          <View style={globalStyles.emptyContainer}>
+            <Text style={globalStyles.emptyText}>No tasks yet. Add your first task!</Text>
+          </View>
+        }
       />
       <Button 
-        title="Create New Task"
+        title="Add New Task"
         onPress={() => navigation.navigate('AddTask')}
       />
     </View>

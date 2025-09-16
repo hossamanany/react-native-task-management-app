@@ -11,7 +11,6 @@ export const globalStyles = StyleSheet.create({
     taskContainer: {
         padding: 16,
         marginBottom: 16,
-        backgroundColor: '#CEF5BE',
         borderRadius: 8,
         shadowColor: '#000',
         shadowOpacity: 0.1,
@@ -19,12 +18,64 @@ export const globalStyles = StyleSheet.create({
         elevation: 2,
     },
 
-    statusIndicator: {
-        width: 10,
-        height: 10,
-        borderRadius: 5,
-        marginRight: 10,
-      },
+    completedTask: {
+        backgroundColor: '#E8F5E8',
+        borderLeftWidth: 4,
+        borderLeftColor: '#4CAF50',
+    },
+
+    incompleteTask: {
+        backgroundColor: '#FFF3E0',
+        borderLeftWidth: 4,
+        borderLeftColor: '#FF9800',
+    },
+
+    taskHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+
+    toggleButton: {
+        width: 30,
+        height: 30,
+        borderRadius: 15,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: 12,
+        borderWidth: 2,
+    },
+
+    toggleButtonComplete: {
+        backgroundColor: '#4CAF50',
+        borderColor: '#4CAF50',
+    },
+
+    toggleButtonIncomplete: {
+        backgroundColor: 'transparent',
+        borderColor: '#FF9800',
+    },
+
+    toggleButtonText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: 'white',
+    },
+
+    taskName: {
+        flex: 1,
+        fontSize: 16,
+        fontWeight: '500',
+    },
+
+    completedText: {
+        textDecorationLine: 'line-through',
+        color: '#666',
+    },
+
+    normalText: {
+        color: '#333',
+    },
 
     input: {
         marginBottom: 16,
@@ -61,54 +112,17 @@ export const globalStyles = StyleSheet.create({
         fontWeight: 'bold', 
     },
 
-    quoteContainer: {
-        backgroundColor: 'lightblue',
-        padding: 15,
-        marginBottom: 20,
-        borderRadius: 10,
+
+    emptyContainer: {
+        flex: 1,
+        justifyContent: 'center',
         alignItems: 'center',
-    },
-    
-    searchBar: {
-        borderWidth: 1,
-        borderColor: 'blue',
-        borderRadius: 10,
-        backgroundColor: 'lightblue',
-        padding: 10,
-        marginBottom: 20,
+        paddingVertical: 50,
     },
 
-    searchIcon: {
-        color: "#999",
-    },
-
-    quoteText: {
-        fontStyle: 'italic',
-        fontWeight: 'bold',
+    emptyText: {
         fontSize: 16,
+        color: '#666',
         textAlign: 'center',
-        backgroundColor: 'lightblue',
-        padding: 15,
-        marginBottom: 20,
-        borderRadius: 10,
-    },
-
-    title: {
-        fontSize: 24, 
-        marginBottom: 10, 
-    },
-
-    text: { 
-        fontSize: 16, 
-    },
-
-    darkMode: {
-        backgroundColor: '#fff',
-        color: '#000',
-    },
-    
-    lightMode: {
-        backgroundColor: '#000',
-        color: '#fff',
     },
 });
