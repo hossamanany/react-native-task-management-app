@@ -1,38 +1,48 @@
-# React Native Task Manager App
+# Task Manager App
 
-A simple and intuitive task management application built with React Native and Expo, designed for the Chapter One Tech Screen interview process.
+A simple and intuitive React Native task management application that allows users to create, manage, and track their daily tasks with descriptions and completion status.
 
 ## Features
 
 ### Core Functionality
 
-- **Add Task**: Users can add new tasks with a brief description
-- **Mark Task as Complete**: Users can toggle tasks between complete and incomplete states with visual feedback
-- **Delete Task**: Users can remove tasks from the list
-- **Task List**: Displays all tasks with clear visual distinction between complete and incomplete items
+- **Add Tasks**: Create new tasks with a name and optional description
+- **Mark as Complete**: Toggle task completion status with visual feedback
+- **Delete Tasks**: Remove tasks with confirmation dialog
+- **Task List**: View all tasks in an organized list with visual distinction between complete and incomplete tasks
 
 ### User Interface
 
-- Clean and intuitive design using React Native's default components
-- Visual feedback for user interactions (completing or deleting tasks)
-- Responsive layout that works on both iOS and Android
-- Color-coded task status indicators
-- Strikethrough text for completed tasks
+- **Clean Design**: Modern, intuitive interface using React Native components
+- **Visual Feedback**: Immediate feedback for all user interactions
+- **Responsive Layout**: Optimized for different screen sizes
+- **Status Indicators**: Clear visual distinction between complete and incomplete tasks
+- **Confirmation Dialogs**: Safe deletion with user confirmation
 
 ### State Management
 
-- Local component state management using React hooks
-- AsyncStorage for data persistence
-- No external state management libraries required
+- **Local Component State**: Uses React's useState hook for state management
+- **Props Passing**: Demonstrates proper use of props for component communication
+- **Navigation State**: Manages task data through React Navigation parameters
 
-## Prerequisites
+## Screenshots
 
-- Node.js (v16 or higher)
-- npm or yarn
-- Expo CLI
-- Expo Go app on your mobile device (for testing)
+The app includes screenshots in the `assets/screenshots/` directory:
+
+- `tasklist.jpg` - Main task list view
+- `add.jpg` - Add new task screen
+- `edit.jpg` - Task editing interface
 
 ## Installation & Setup
+
+### Prerequisites
+
+- Node.js (version 14 or higher)
+- npm or yarn
+- Expo CLI (`npm install -g @expo/cli`)
+- iOS Simulator (for iOS development) or Android Studio (for Android development)
+
+### Installation Steps
 
 1. **Clone the repository**
 
@@ -45,8 +55,6 @@ A simple and intuitive task management application built with React Native and E
 
    ```bash
    npm install
-   # or
-   yarn install
    ```
 
 3. **Start the development server**
@@ -57,84 +65,107 @@ A simple and intuitive task management application built with React Native and E
    expo start
    ```
 
-4. **Run on device**
-   - Install Expo Go app on your mobile device
-   - Scan the QR code displayed in the terminal/browser
-   - The app will load on your device
+4. **Run on device/simulator**
+   - For iOS: `npm run ios` or `expo start --ios`
+   - For Android: `npm run android` or `expo start --android`
+   - For Web: `npm run web` or `expo start --web`
 
 ## Usage
 
-### Adding a Task
+### Adding a New Task
 
 1. Tap the "Add New Task" button on the main screen
-2. Enter a task description in the text input
-3. Tap "Add Task" to save
+2. Enter a task name (required)
+3. Optionally add a description
+4. Tap "Add Task" to save
 
-### Marking Tasks as Complete
+### Managing Tasks
 
-1. Tap the circular button next to any task
-2. Completed tasks will show a green checkmark and strikethrough text
-3. Tap again to mark as incomplete
+- **Mark Complete**: Tap the circular button next to any task to toggle completion status
+- **Delete Task**: Tap the "Delete" button and confirm in the dialog
+- **View Details**: Task descriptions are displayed below the task name
 
-### Deleting Tasks
+### Visual Indicators
 
-1. Tap the "Delete" button on any task
-2. The task will be permanently removed from the list
+- **Incomplete Tasks**: White background with orange left border
+- **Complete Tasks**: Light green background with green left border and strikethrough text
+- **Interactive Elements**: Buttons have shadow effects and color changes on interaction
 
-## Technical Implementation
+## Technical Details
 
-### Architecture
-
-- **React Native** with **Expo** for cross-platform development
-- **TypeScript** for type safety
-- **React Navigation** for screen navigation
-- **AsyncStorage** for data persistence
-
-### Key Components
-
-- `TaskListScreen`: Main screen displaying all tasks
-- `AddTaskScreen`: Screen for creating new tasks
-- `TaskItem`: Reusable component for individual task display
-
-### Implementation Details
-
-- Uses React's `useState` and `useEffect` hooks
-- Local state management without external libraries
-- AsyncStorage for data persistence across app sessions
-
-## Third-Party Libraries Used
+### Dependencies
 
 - **@react-navigation/native**: Navigation between screens
-- **@react-navigation/stack**: Stack navigator implementation
-- **@react-native-async-storage/async-storage**: Local data storage
-- **uuid**: Unique ID generation for tasks
-- **expo**: React Native development platform
+- **@react-navigation/stack**: Stack navigation implementation
+- **expo**: Development platform and tools
+- **react-native**: Core React Native framework
+- **react-native-get-random-values**: UUID generation support
+- **uuid**: Unique identifier generation for tasks
 
-## Code Quality
+### Project Structure
 
-- Clean, well-organized code structure
-- TypeScript for type safety
-- Consistent naming conventions
-- Proper error handling
-- Responsive design principles
+```text
+task-management/
+├── components/
+│   └── TaskItem.tsx          # Individual task display component
+├── screens/
+│   ├── TaskListScreen.tsx    # Main task list view
+│   └── AddTaskScreen.tsx     # Add new task form
+├── styles/
+│   └── styles.ts             # Global styling definitions
+├── types.d.ts                # TypeScript type definitions
+├── App.tsx                   # Main app component with navigation
+└── package.json              # Project dependencies and scripts
+```
 
-## Evaluation Criteria Met
+### Key React Native Concepts Demonstrated
 
-✅ **Functionality**: All required features implemented (add, complete, delete tasks)
-✅ **Code Quality**: Clean, organized, and commented code
-✅ **UI/UX Design**: Intuitive interface with visual feedback
-✅ **Core Concepts**: Demonstrates understanding of React Native components, state management, and user interactions
+- **Component State Management**: Using useState hook for local state
+- **Props and Component Communication**: Passing data between parent and child components
+- **Navigation**: Screen-to-screen navigation with parameter passing
+- **Event Handling**: User interaction handling (onPress, onChangeText)
+- **Conditional Rendering**: Dynamic UI based on task status
+- **Styling**: Responsive design with StyleSheet API
+- **TypeScript Integration**: Type safety with interfaces and type definitions
+
+## Development Notes
+
+### State Management Approach
+
+This app uses local component state management as specified in the requirements. Tasks are stored in the TaskListScreen component state and passed to child components via props. When adding new tasks, the data is passed through navigation parameters to maintain state consistency.
+
+### Visual Feedback Implementation
+
+- Alert dialogs for user confirmations and success messages
+- Visual status indicators with color coding
+- Interactive button states with shadow effects
+- Smooth transitions between task states
+
+### Responsive Design
+
+The app is designed to work across different screen sizes with:
+
+- Flexible layouts using flex properties
+- Appropriate spacing and padding
+- Scalable text and button sizes
+- Touch-friendly interactive elements
 
 ## Future Enhancements
 
-While this app meets all interview requirements, potential future improvements could include:
+Potential improvements that could be added:
 
+- Task editing functionality
 - Task categories or tags
 - Due dates and reminders
-- Search and filter functionality
+- Search and filter capabilities
+- Data persistence with AsyncStorage
+- Dark mode support
 - Task priority levels
-- Data export/import capabilities
 
----
+## License
 
-## Built for Chapter One Tech Screen Interview Process
+This project is created as part of a technical assessment and is for demonstration purposes.
+
+## Contact
+
+For questions or feedback about this project, please contact the development team.

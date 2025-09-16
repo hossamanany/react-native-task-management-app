@@ -1,13 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { globalStyles } from '../styles/styles';
-
-interface Task {
-  id: string;
-  name: string;
-  status: 'Complete' | 'Incomplete';
-}
+import { Task } from '../types';
 
 interface TaskItemProps {
   task: Task;
@@ -15,15 +9,16 @@ interface TaskItemProps {
   onToggleComplete: (id: string) => void;
 }
 
+/**
+ * TaskItem - Individual task display component
+ * 
+ * This component demonstrates:
+ * - Props interface definition
+ * - Conditional rendering based on task status
+ * - Event handling with TouchableOpacity
+ * - Dynamic styling based on state
+ */
 export default function TaskItem({ task, onDelete, onToggleComplete }: TaskItemProps) {
-  const navigation = useNavigation();
-
-  // Get color based on status
-  const getStatusColor = (status: string): string => {
-    return status === 'Complete' ? 'green' : 'orange';
-  };
-
-  // Get text style based on completion status
   const getTextStyle = () => {
     return task.status === 'Complete' ? globalStyles.completedText : globalStyles.normalText;
   };
@@ -34,7 +29,6 @@ export default function TaskItem({ task, onDelete, onToggleComplete }: TaskItemP
       task.status === 'Complete' ? globalStyles.completedTask : globalStyles.incompleteTask
     ]}>
       <View style={globalStyles.taskHeader}>
-        {/* Toggle Complete Button */}
         <TouchableOpacity
           style={[
             globalStyles.toggleButton,
@@ -47,10 +41,14 @@ export default function TaskItem({ task, onDelete, onToggleComplete }: TaskItemP
           </Text>
         </TouchableOpacity>
         
-        {/* Task Name */}
-        <Text style={[globalStyles.taskName, getTextStyle()]}>
-          {task.name}
-        </Text>
+        <View style={globalStyles.taskTextContainer}>
+          <Text style={[globalStyles.taskName, getTextStyle()]}>
+            {task.name}
+          </Text>
+          <Text style={[globalStyles.taskDescription, getTextStyle()]}>
+            {task.description}
+          </Text>
+        </View>
       </View>
       
       <View style={globalStyles.buttonContainer}>

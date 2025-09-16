@@ -1,90 +1,72 @@
-import React, { useState, useEffect } from 'react';
-import { View, FlatList, Button, Text } from 'react-native';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useCallback } from 'react';
+import { View, FlatList, TouchableOpacity, Text, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import TaskItem from '../components/TaskItem';
 import { globalStyles } from '../styles/styles';
-import { TaskListScreenNavigationProp } from '../types';
+import { TaskListScreenNavigationProp, Task } from '../types';
+import { useTaskContext } from '../context/TaskContext';
+import { MESSAGES } from '../constants';
 
-interface Task {
-  id: string;
-  name: string;
-  status: 'Complete' | 'Incomplete';
-}
-
+/**
+ * TaskListScreen - Main screen displaying all tasks
+ * 
+ * This component demonstrates:
+ * - Simple task list display
+ * - Navigation handling
+ * - Task actions with confirmation
+ */
 export default function TaskListScreen() {
-  const [tasks, setTasks] = useState<Task[]>([]);
   const navigation = useNavigation<TaskListScreenNavigationProp>();
+  const { tasks, deleteTask, toggleTaskComplete } = useTaskContext();
 
-  // Fetch tasks from AsyncStorage
-  const fetchTasks = async () => {
-    const storedTasks = await AsyncStorage.getItem('tasks');
-    if (storedTasks) {
-      const parsedTasks: Task[] = JSON.parse(storedTasks);
-      // Sort tasks: incomplete first, then complete
-      parsedTasks.sort((a, b) => {
-        if (a.status === b.status) return 0;
-        return a.status === 'Incomplete' ? -1 : 1;
-      });
-      setTasks(parsedTasks);
-    } else {
-      console.log('No tasks found!');
-    }
-  };
-
-  useEffect(() => {
-    fetchTasks();
-  }, []);
-
-  // Listen for screen focus to refresh tasks
-  useFocusEffect(
-    React.useCallback(() => {
-      fetchTasks();
-    }, [])
-  );
-
-  const handleDelete = async (id: string) => {
-    const updatedTasks = tasks.filter((task) => task.id !== id);
-    setTasks(updatedTasks);
-    await AsyncStorage.setItem('tasks', JSON.stringify(updatedTasks));
-  };
-
-  const handleToggleComplete = async (id: string) => {
-    const updatedTasks = tasks.map((task) => 
-      task.id === id 
-        ? { ...task, status: task.status === 'Complete' ? 'Incomplete' as const : 'Complete' as const }
-        : task
-    );
-    setTasks(updatedTasks);
-    await AsyncStorage.setItem('tasks', JSON.stringify(updatedTasks));
-  };
-
-  const renderTaskItem = ({ item }: { item: Task }) => {
-    return (
-      <TaskItem
-        task={item}
-        onDelete={handleDelete}
-        onToggleComplete={handleToggleComplete}
-      />
+  const handleDelete = (id: string) => {
+    Alert.alert(
+      'Delete Task',
+      'Are you sure you want to delete this task?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Delete', style: 'destructive', onPress: () => deleteTask(id) },
+      ]
     );
   };
+
+  const renderTaskItem = useCallback(({ item }: { item: Task }) => (
+    <TaskItem
+      task={item}
+      onDelete={handleDelete}
+      onToggleComplete={toggleTaskComplete}
+    />
+  ), [handleDelete, toggleTaskComplete]);
 
   return (
     <View style={globalStyles.container}>
+      <Text style={globalStyles.screenTitle}>My Tasks</Text>
+      {tasks.length > 0 && (
+        <Text style={globalStyles.taskCount}>
+          {tasks.length} task{tasks.length !== 1 ? 's' : ''}
+        </Text>
+      )}
       <FlatList
         data={tasks}
         keyExtractor={(item) => item.id}
         renderItem={renderTaskItem}
+        showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View style={globalStyles.emptyContainer}>
-            <Text style={globalStyles.emptyText}>No tasks yet. Add your first task!</Text>
+            <Text style={globalStyles.emptyText}>
+              {tasks.length === 0 ? 'No tasks yet. Add your first task!' : 'No tasks match your criteria.'}
+            </Text>
           </View>
         }
       />
-      <Button 
-        title="Add New Task"
+      <TouchableOpacity 
+        style={globalStyles.addButton}
         onPress={() => navigation.navigate('AddTask')}
-      />
+      >
+        <Text style={globalStyles.addButtonText}>
+          Add New Task
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 }
