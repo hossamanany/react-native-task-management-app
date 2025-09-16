@@ -1,6 +1,6 @@
 # Task Manager App
 
-A simple and intuitive React Native task management application that allows users to create, manage, and track their daily tasks with descriptions and completion status.
+A simple and intuitive React Native task management application developed as a personal project. This app allows users to create, manage, and track their daily tasks with descriptions and completion status.
 
 ## Features
 
@@ -21,17 +21,18 @@ A simple and intuitive React Native task management application that allows user
 
 ### State Management
 
-- **Local Component State**: Uses React's useState hook for state management
-- **Props Passing**: Demonstrates proper use of props for component communication
-- **Navigation State**: Manages task data through React Navigation parameters
+- **Context API**: Uses React Context API for centralized state management across components
+- **Custom Hooks**: Implements useTaskContext hook for type-safe context consumption
+- **Global State**: Task data is managed globally through TaskProvider context
+- **Component Communication**: Demonstrates both Context API and props for different use cases
 
 ## Screenshots
 
 The app includes screenshots in the `assets/screenshots/` directory:
 
-- `tasklist.jpg` - Main task list view
-- `add.jpg` - Add new task screen
-- `edit.jpg` - Task editing interface
+- `list.png` - Main task list view
+- `add.png` - Task adding interface
+- `delete.png` - Task deleting module
 
 ## Installation & Setup
 
@@ -98,16 +99,35 @@ The app includes screenshots in the `assets/screenshots/` directory:
 - **@react-navigation/native**: Navigation between screens
 - **@react-navigation/stack**: Stack navigation implementation
 - **expo**: Development platform and tools
+- **expo-status-bar**: Status bar management
+- **react**: Core React library
+- **react-dom**: React DOM for web support
 - **react-native**: Core React Native framework
 - **react-native-get-random-values**: UUID generation support
+- **react-native-safe-area-context**: Safe area handling
+- **react-native-screens**: Native screen optimization
+- **react-native-web**: Web platform support
 - **uuid**: Unique identifier generation for tasks
+
+### Development Dependencies
+
+- **@babel/core**: Babel transpilation
+- **@types/react**: TypeScript definitions for React
+- **@types/react-native**: TypeScript definitions for React Native
+- **@types/uuid**: TypeScript definitions for UUID
+- **typescript**: TypeScript compiler
 
 ### Project Structure
 
 ```text
 task-management/
 ├── components/
+│   ├── ErrorBoundary.tsx     # Error boundary for error handling
 │   └── TaskItem.tsx          # Individual task display component
+├── constants/
+│   └── index.ts              # Application constants and messages
+├── context/
+│   └── TaskContext.tsx       # Context API for state management
 ├── screens/
 │   ├── TaskListScreen.tsx    # Main task list view
 │   └── AddTaskScreen.tsx     # Add new task form
@@ -120,19 +140,28 @@ task-management/
 
 ### Key React Native Concepts Demonstrated
 
-- **Component State Management**: Using useState hook for local state
-- **Props and Component Communication**: Passing data between parent and child components
-- **Navigation**: Screen-to-screen navigation with parameter passing
+- **Context API**: Centralized state management using React Context
+- **Custom Hooks**: Type-safe context consumption with useTaskContext
+- **Component Composition**: Proper component hierarchy and organization
+- **Error Boundaries**: Graceful error handling and recovery
+- **Navigation**: Screen-to-screen navigation with React Navigation
 - **Event Handling**: User interaction handling (onPress, onChangeText)
 - **Conditional Rendering**: Dynamic UI based on task status
 - **Styling**: Responsive design with StyleSheet API
 - **TypeScript Integration**: Type safety with interfaces and type definitions
+- **Constants Management**: Centralized application constants
 
 ## Development Notes
 
 ### State Management Approach
 
-This app uses local component state management as specified in the requirements. Tasks are stored in the TaskListScreen component state and passed to child components via props. When adding new tasks, the data is passed through navigation parameters to maintain state consistency.
+This app uses React Context API for centralized state management. The `TaskProvider` component wraps the entire app and provides task management functions through context. This approach offers several benefits:
+
+- **Centralized State**: All task data is managed in one place
+- **Type Safety**: Custom `useTaskContext` hook provides full TypeScript support
+- **Component Decoupling**: Components don't need to pass props through multiple levels
+- **Automatic Sorting**: Tasks are automatically sorted (incomplete first, then complete)
+- **Duplicate Prevention**: Prevents adding tasks with duplicate names
 
 ### Visual Feedback Implementation
 
@@ -140,6 +169,23 @@ This app uses local component state management as specified in the requirements.
 - Visual status indicators with color coding
 - Interactive button states with shadow effects
 - Smooth transitions between task states
+
+### Error Handling
+
+The app includes comprehensive error handling:
+
+- **Error Boundary**: Catches JavaScript errors anywhere in the component tree
+- **Graceful Recovery**: Provides user-friendly error messages with retry functionality
+- **Debug Information**: Shows detailed error information in development mode
+- **Fallback UI**: Custom error screen when something goes wrong
+
+### Constants Management
+
+Application constants are centralized in `constants/index.ts`:
+
+- **Message Constants**: Success messages and user feedback text
+- **Type Safety**: All constants are properly typed with `as const`
+- **Maintainability**: Easy to update messages and text across the app
 
 ### Responsive Design
 
@@ -154,18 +200,32 @@ The app is designed to work across different screen sizes with:
 
 Potential improvements that could be added:
 
-- Task editing functionality
+- Task editing functionality (currently only add/delete)
 - Task categories or tags
 - Due dates and reminders
 - Search and filter capabilities
 - Data persistence with AsyncStorage
 - Dark mode support
 - Task priority levels
+- Task sharing capabilities
+- Offline support
+- Push notifications for reminders
+
+## About This Project
+
+This is a personal project developed to demonstrate React Native development skills and modern React patterns. The app showcases:
+
+- React Native development with TypeScript
+- Context API for state management
+- Component composition and reusability
+- Error handling with Error Boundaries
+- Navigation with React Navigation
+- Clean code architecture and best practices
 
 ## License
 
-This project is created as part of a technical assessment and is for demonstration purposes.
+This project is created as a personal development project and is for demonstration purposes.
 
 ## Contact
 
-For questions or feedback about this project, please contact the development team.
+For questions or feedback about this project, please contact the developer.
